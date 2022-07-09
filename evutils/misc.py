@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import mmcv
 import numpy as np
 import shapely
@@ -21,7 +22,7 @@ def tensor2imgs(tensor, mean=(0, 0, 0), std=(1, 1, 1), to_rgb=True):
 
 def polygon_iou(poly1, poly2):
     """
-    Intersection over union between two shapely polygons.
+        Intersection over union between two shapely polygons.
     """
     try:
         if not poly1.intersects(poly2):  # this test is fast and can accelerate calculation
@@ -38,8 +39,8 @@ def polygon_iou(poly1, poly2):
 
 def polygon_nms(polygons, scores, iou_threshold=0.5):
     """
-    Apply nms to polygons, returns flags, which polygons to leave
-    ref: https://github.com/MhLiao/RRD/blob/master/examples/text/nms.py
+        Apply nms to polygons, returns flags, which polygons to leave
+        ref: https://github.com/MhLiao/RRD/blob/master/examples/text/nms.py
     """
 
     indices = sorted(range(len(scores)), key=lambda k: -scores[k])
@@ -72,3 +73,32 @@ def polygon_nms(polygons, scores, iou_threshold=0.5):
                     break
 
     return nms_flag
+
+
+def img_slide_window(cv2_img, cell_w=512.0, cell_h=512.0):
+    H, W = cv2_img.shape[:2]
+    row = math.ceil(H / cell_h)
+    col = math.ceil(W / cell_w)
+
+    h_new = row * cell_h
+    w_new = col * cell_w
+
+    if h_new != H or w_new != W:
+        if len(cv2_img.shape) == 2:
+            tmp = np.zeros((h_new, w_new))
+            tmp[:cv2_img.shape[0], :cv2_img.shape[1]] = cv2_img
+        else:
+            tmp = np.zeros((h_new, w_new, cv2_img.shape[-1]))
+            tmp[:cv2_img.shape[0], :cv2_img.shape[1], :] = cv2_img
+        H, W = tmp.shape[:2]
+    else:
+        tmp = cv2_img
+    
+    result = []
+    for idr in range(row):
+        for idc in range(col):
+            if len(tmp.shape) == 2:
+                result.append((idr, idc, tmp[(idr * cell_h):((idr + 1) * cell_h), (idc * cell_w):((idc + 1) * cell_w)]))
+            else:
+                result.append((idr, idc,tmp[(idr * cell_h):((idr + 1) * cell_h), (idc * cell_w):((idc + 1) * cell_w), :]))
+    return result
