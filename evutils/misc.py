@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import mmcv
 import numpy as np
 import shapely
