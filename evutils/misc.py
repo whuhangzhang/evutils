@@ -75,8 +75,9 @@ def polygon_nms(polygons, scores, iou_threshold=0.5):
     return nms_flag
 
 
-def img_slide_window(cv2_img, cell_w=512.0, cell_h=512.0):
-    H, W = cv2_img.shape[:2]
+def img_slide_window(cv2_img, cell_size=[512, 512]):
+    H, W, C = cv2_img.shape
+    cell_w, cell_h = cell_size
     row = math.ceil(H / cell_h)
     col = math.ceil(W / cell_w)
 
@@ -88,17 +89,21 @@ def img_slide_window(cv2_img, cell_w=512.0, cell_h=512.0):
             tmp = np.zeros((h_new, w_new))
             tmp[:cv2_img.shape[0], :cv2_img.shape[1]] = cv2_img
         else:
-            tmp = np.zeros((h_new, w_new, cv2_img.shape[-1]))
+            tmp = np.zeros((h_new, w_new, C))
             tmp[:cv2_img.shape[0], :cv2_img.shape[1], :] = cv2_img
         H, W = tmp.shape[:2]
     else:
         tmp = cv2_img
     
+    index = []
     result = []
     for idr in range(row):
         for idc in range(col):
             if len(tmp.shape) == 2:
-                result.append((idr, idc, tmp[(idr * cell_h):((idr + 1) * cell_h), (idc * cell_w):((idc + 1) * cell_w)]))
+                result.append(tmp[(idr * cell_h):((idr + 1) * cell_h), \
+                                (idc * cell_w):((idc + 1) * cell_w)])
             else:
-                result.append((idr, idc,tmp[(idr * cell_h):((idr + 1) * cell_h), (idc * cell_w):((idc + 1) * cell_w), :]))
-    return result
+                result.append(tmp[(idr * cell_h):((idr + 1) * cell_h), \
+                                (idc * cell_w):((idc + 1) * cell_w), :])
+            index.append([idr, idc])
+    return index, result
