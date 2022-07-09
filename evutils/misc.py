@@ -33,3 +33,41 @@ def polygon_iou(poly1, poly2):
         print('shapely.geos.TopologicalError occurred, iou set to 0')
         iou = 0
     return iou
+
+
+def polygon_nms(polygons, scores, iou_threshold=0.5):
+    """
+    Apply nms to polygons, returns flags, which polygons to leave
+    ref: https://github.com/MhLiao/RRD/blob/master/examples/text/nms.py
+    """
+
+    indices = sorted(range(len(scores)), key=lambda k: -scores[k])
+    box_num = len(polygons)
+    nms_flag = np.asarray([True] * box_num)
+
+    for i in range(box_num):
+        ii = indices[i]
+        if not nms_flag[ii]:
+            continue
+
+        for j in range(box_num):
+            jj = indices[j]
+
+            if j == i or not nms_flag[jj]:
+                continue
+
+            polygon1, polygon2 = polygons[ii], polygons[jj]
+            score1, score2 = scores[ii], scores[jj]
+
+            iou = polygon_iou(polygon1, polygon2)
+
+            if iou > iou_threshold:
+                if score1 > score2:
+                    nms_flag[jj] = False
+                if score1 == score2 and polygon1.area > polygon2.area:
+                    nms_flag[jj] = False
+                if score1 == score2 and polygon1.area <= polygon2.area:
+                    nms_flag[ii] = False
+                    break
+
+    return nms_flag
