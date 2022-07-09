@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 
 def load_model_weight(model, checkpoint, logger):
+    # ref: https://github.com/RangiLyu/nanodet/blob/v0.4.1/nanodet/util/check_point.py
     state_dict = checkpoint['state_dict']
     # strip prefix of state_dict
     if list(state_dict.keys())[0].startswith('module.'):
@@ -75,6 +76,7 @@ def rename_state_dict_keys(source, key_transformation, target=None):
 
 def fuse_conv_and_bn(conv: nn.Conv2d, bn: nn.BatchNorm2d) -> nn.Conv2d:
     """
+    ref: https://github.com/Megvii-BaseDetection/YOLOX/blob/0.3.0/yolox/utils/model_utils.py
     Fuse convolution and batchnorm layers.
     check more info on https://tehnokv.com/posts/fusing-batchnorm-and-conv/
 

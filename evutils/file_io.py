@@ -9,8 +9,6 @@ from six.moves import urllib
 from mmcv.utils import get_logger
 logger = get_logger('evutils')
 
-__all__ = ['mkdir_p', 'download', 'recursive_walk']
-
 
 def mkdir_p(dirname):
     """ Like "mkdir -p", make a dir recursively, but do nothing if the dir exists

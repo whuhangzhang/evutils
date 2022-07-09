@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 import math
 
 x_pi = 3.14159265358979324 * 3000.0 / 180.0
