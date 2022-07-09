@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import math
+import json
 import mmcv
 import numpy as np
 import shapely
@@ -107,3 +108,15 @@ def img_slide_window(cv2_img, cell_size=[512, 512]):
                                 (idc * cell_w):((idc + 1) * cell_w), :])
             index.append([idr, idc])
     return index, result
+
+
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return super(MyEncoder, self).default(obj)
