@@ -84,11 +84,17 @@ def gcj02_to_wgs84(lng, lat):
 
 
 def bd09_to_wgs84(bd_lon, bd_lat):
+    """
+    百度坐标系(BD-09)转WGS84
+    """
     lon, lat = bd09_to_gcj02(bd_lon, bd_lat)
     return gcj02_to_wgs84(lon, lat)
 
 
 def wgs84_to_bd09(lon, lat):
+    """
+    WGS84转百度坐标系(BD-09)
+    """
     lon, lat = wgs84_to_gcj02(lon, lat)
     return gcj02_to_bd09(lon, lat)
 
