@@ -7,7 +7,7 @@ from .misc import tensor2imgs, polygon_iou, polygon_nms, img_slide_window, MyEnc
 from .file_io import mkdir_p, download, recursive_walk
 from .torch_utils import (load_model_weight, save_model, rename_state_dict_keys, fuse_conv_and_bn, 
                           fuse_model, replace_module, freeze_module)
-from .cv2 import (sort_contours, label_contour, imrotate, imresize, skeletonize, findContours)
+from .cv2 import (sort_contours, label_contour, imrotate, imresize, get_rotate_crop_image, skeletonize, findContours)
 from .version import __version__
 
 __all__ = [
@@ -16,5 +16,5 @@ __all__ = [
     'tensor2imgs', 'polygon_iou', 'polygon_nms', 'img_slide_window', 'mkdir_p', 'download', 
     'recursive_walk', 'load_model_weight', 'save_model', 'rename_state_dict_keys', 'fuse_conv_and_bn', 
     'fuse_model', 'replace_module', 'freeze_module', 'MyEncoder', 'sort_contours', 'label_contour', 
-    'imrotate', 'imresize', 'skeletonize', 'findContours'
+    'imrotate', 'imresize', 'get_rotate_crop_image', 'skeletonize', 'findContours'
 ]
