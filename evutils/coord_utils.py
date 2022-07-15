@@ -131,3 +131,33 @@ def out_of_china(lng, lat):
     :return:
     """
     return not (lng > 73.66 and lng < 135.05 and lat > 3.86 and lat < 53.55)
+
+
+def wgs84_to_webMercator(lon, lat):
+    """wgs84坐标 转 墨卡托坐标"""
+    x = lon * 20037508.342789 / 180
+    y = math.log(math.tan((90 + lat) * pi / 360)) / (pi / 180)
+    y = y * 20037508.34789 / 180
+    return x, y
+
+
+def webMercator_to_wgs84(x, y):
+    """墨卡托坐标 转 wgs84坐标"""
+    lon = x / 20037508.34 * 180
+    lat = y / 20037508.34 * 180
+    lat = 180 / pi * (2 * math.atan(math.exp(lat * pi / 180)) - pi / 2)
+    return lon, lat
+
+
+def gcj02_to_webMercator(x, y):
+    """火星转墨卡托"""
+    wgs84_x, wgs84_y = gcj02_to_wgs84(x, y)
+    webMercator_x, webMercator_y = wgs84_to_webMercator(wgs84_x, wgs84_y)
+    return webMercator_x, webMercator_y
+
+
+def webMercator_to_gcj02(x, y):
+    """墨卡托转火星"""
+    wgs84_x, wgs84_y = webMercator_to_wgs84(x, y)
+    gcj02_x, gcj02_y = wgs84_to_gcj02(wgs84_x, wgs84_y)
+    return gcj02_x, gcj02_y
