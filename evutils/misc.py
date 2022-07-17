@@ -125,7 +125,7 @@ class MyEncoder(json.JSONEncoder):
             return super(MyEncoder, self).default(obj)
 
 
-def setup_seed(seed=2022):
+def setup_seed(seed=42):
     os.environ['PYTHONHASHSEED'] = str(seed)
     
     torch.manual_seed(seed)
