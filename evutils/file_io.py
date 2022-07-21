@@ -83,12 +83,17 @@ def read_dir(root):
     """
     ref: https://github.com/whai362/pan_pp.pytorch/blob/master/eval/ctw/file_util.py#L3
     """
-	file_path_list = []
-	for file_path, dirs, files in os.walk(root):
-		for file in files:
-			file_path_list.append(os.path.join(file_path, file).replace('\\', '/'))
-	file_path_list.sort()
-	return file_path_list
+    file_path_list = []
+    for file_path, dirs, files in os.walk(root):
+        for file in files:
+            file_path_list.append(os.path.join(file_path, file).replace('\\', '/'))
+    file_path_list.sort()
+    return file_path_list
+
+
+def _check_image_file(path):
+    img_end = {'jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif', 'tiff', 'gif'}
+    return any([path.lower().endswith(e) for e in img_end])
 
 
 def get_image_file_list(img_file):
