@@ -79,5 +79,35 @@ def recursive_walk(rootdir):
             yield os.path.join(r, f)
 
 
-if __name__ == '__main__':
-    download('http://dl.caffe.berkeleyvision.org/caffe_ilsvrc12.tar.gz', '.')
+def read_dir(root):
+    """
+    ref: https://github.com/whai362/pan_pp.pytorch/blob/master/eval/ctw/file_util.py#L3
+    """
+	file_path_list = []
+	for file_path, dirs, files in os.walk(root):
+		for file in files:
+			file_path_list.append(os.path.join(file_path, file).replace('\\', '/'))
+	file_path_list.sort()
+	return file_path_list
+
+
+def get_image_file_list(img_file):
+    """
+    ref: https://github.com/PaddlePaddle/PaddleOCR/blob/bb77fcef6fdfc029f92d7876b714554389053699/ppocr/utils/utility.py#L57
+    """
+    imgs_lists = []
+    if img_file is None or not os.path.exists(img_file):
+        raise Exception("not found any img file in {}".format(img_file))
+
+    img_end = {'jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif', 'tiff', 'gif'}
+    if os.path.isfile(img_file) and _check_image_file(img_file):
+        imgs_lists.append(img_file)
+    elif os.path.isdir(img_file):
+        for single_file in os.listdir(img_file):
+            file_path = os.path.join(img_file, single_file)
+            if os.path.isfile(file_path) and _check_image_file(file_path):
+                imgs_lists.append(file_path)
+    if len(imgs_lists) == 0:
+        raise Exception("not found any img file in {}".format(img_file))
+    imgs_lists = sorted(imgs_lists)
+    return imgs_lists
