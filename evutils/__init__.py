@@ -8,7 +8,7 @@ from .misc import tensor2imgs, polygon_iou, polygon_nms, MyEncoder, setup_seed
 from .file_io import mkdir_p, download, recursive_walk, read_dir, get_image_file_list
 from .torch_utils import (load_model_weight, save_model, rename_state_dict_keys, fuse_conv_and_bn, 
                           fuse_model, replace_module, freeze_module)
-from .cv2 import (sort_contours, label_contour, imrotate, imresize, get_rotate_crop_image, skeletonize, findContours)
+from .cv2 import (findContours, imrotate, get_rotate_crop_image, skeletonize)
 from .version import __version__
 
 __all__ = [
@@ -17,7 +17,6 @@ __all__ = [
     'wgs84_to_webMercator', 'webMercator_to_wgs84', 'gcj02_to_webMercator', 'webMercator_to_gcj02', 
     'colormap', 'random_color', 'tensor2imgs', 'polygon_iou', 'polygon_nms', 'mkdir_p', 'download', 
     'recursive_walk', 'load_model_weight', 'save_model', 'rename_state_dict_keys', 'fuse_conv_and_bn', 
-    'fuse_model', 'replace_module', 'freeze_module', 'MyEncoder', 'sort_contours', 'label_contour', 
-    'imrotate', 'imresize', 'get_rotate_crop_image', 'skeletonize', 'findContours', 'setup_seed', 'read_dir', 
-    'get_image_file_list'
+    'fuse_model', 'replace_module', 'freeze_module', 'MyEncoder', 'findContours', 'imrotate',
+    'get_rotate_crop_image', 'skeletonize', , 'setup_seed', 'read_dir', 'get_image_file_list'
 ]
