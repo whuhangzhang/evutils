@@ -3,46 +3,30 @@ import cv2
 import numpy as np
 
 
-def sort_contours(cnts, method="left-to-right"):
-    """对contours进行排序"""
-    # initialize the reverse flag and sort index
-    reverse = False
-    i = 0
-
-    # handle if we need to sort in reverse
-    if method == "right-to-left" or method == "bottom-to-top":
-        reverse = True
-
-    # handle if we are sorting against the y-coordinate rather than
-    # the x-coordinate of the bounding box
-    if method == "top-to-bottom" or method == "bottom-to-top":
-        i = 1
-
-    # construct the list of bounding boxes and sort them from top to
-    # bottom
-    boundingBoxes = [cv2.boundingRect(c) for c in cnts]
-    (cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes),
-                                        key=lambda b: b[1][i], reverse=reverse))
-
-    # return the list of sorted contours and bounding boxes
-    return cnts, boundingBoxes
-
-
-def label_contour(image, c, text, color=(0, 255, 0), thickness=2):
-    """对contours内绘制一些文本"""
-    # compute the center of the contour area and draw a circle
-    # representing the center
-    M = cv2.moments(c)
-    cX = int(M["m10"] / M["m00"])
-    cY = int(M["m01"] / M["m00"])
-
-    # draw the contour and label number on the image
-    cv2.drawContours(image, [c], -1, color, thickness)
-    cv2.putText(image, "{}".format(text), (cX - 20, cY), cv2.FONT_HERSHEY_SIMPLEX,
-                1.0, (255, 255, 255), 2)
-
-    # return the image with the contour number drawn on it
-    return image
+def findContours(binary, largest=False):
+    """求二值图像的contours, 可选最大contour"""
+    if binary.dtype != np.uint8:
+        binary = binary.astype(np.uint8)
+    contours = []
+    if cv2.__version__.startswith('4'):
+        contours, hierarchy = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    elif cv2.__version__.startswith('3'):
+        _, contours, hierarchy = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    else:
+        raise AssertionError(
+            'cv2 must be either version 3 or 4 to call this method')    
+    
+    if largest:
+        max_contour = None
+        max_area = 0
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if area > max_area:
+                area = max_area
+                max_contour = contour
+        contours = max_contour    
+    
+    return contours
 
 
 def imrotate(image, angle):
@@ -69,34 +53,6 @@ def imrotate(image, angle):
 
     # perform the actual rotation and return the image
     return cv2.warpAffine(image, M, (nW, nH))
-
-
-def imresize(image, size, keep_ratio=False):
-    """对图像进行resize"""
-    # initialize the dimensions of the image to be resized and
-    # grab the image size
-    dim = None
-    (h, w) = image.shape[:2]
-
-    # if both the width and height are None, then return the
-    # original image
-    if size is None:
-        return image
-    
-    width = size[0]
-    height = size[1]
-    
-    if keep_ratio:
-        ratio = min(width / float(w), height / float(h))
-        dim = (int(w * ratio), int(h * ratio))
-    else:
-        dim = size
-
-    # resize the image
-    resized = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
-
-    # return the resized image
-    return resized
 
 
 def get_rotate_crop_image(img, points):
@@ -155,29 +111,3 @@ def skeletonize(image, size, structuring=cv2.MORPH_RECT):
 
     # return the skeletonized image
     return skeleton
-
-
-def findContours(binary, largest=False):
-    """求二值图像的contours, 可选最大contour"""
-    if binary.dtype != np.uint8:
-        binary = binary.astype(np.uint8)
-    contours = []
-    if cv2.__version__.startswith('4'):
-        contours, hierarchy = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    elif cv2.__version__.startswith('3'):
-        _, contours, hierarchy = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    else:
-        raise AssertionError(
-            'cv2 must be either version 3 or 4 to call this method')    
-    
-    if largest:
-        max_contour = None
-        max_area = 0
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            if area > max_area:
-                area = max_area
-                max_contour = contour
-        contours = max_contour    
-    
-    return contours
