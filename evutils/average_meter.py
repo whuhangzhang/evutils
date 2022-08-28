@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-
+# ref: https://github.com/donnyyou/torch-segmentation/blob/75a3932b1fa676c022cc42f2ad556dc6062e79cf/lib/tools/util/average_meter.py
 
 class AverageMeter(object):
     """ Computes ans stores the average and current value"""
