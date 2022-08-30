@@ -4,9 +4,6 @@ import os
 import tqdm
 from six.moves import urllib
 
-from mmcv.utils import get_logger
-logger = get_logger('evutils')
-
 
 def mkdir_p(dirname):
     """ Like "mkdir -p", make a dir recursively, but do nothing if the dir exists
@@ -36,10 +33,10 @@ def download(url, dir, filename=None, expect_size=None):
 
     if os.path.isfile(fpath):
         if expect_size is not None and os.stat(fpath).st_size == expect_size:
-            logger.info("File {} exists! Skip download.".format(filename))
+            print("File {} exists! Skip download.".format(filename))
             return fpath
         else:
-            logger.warn("File {} exists. Will overwrite with a new download!".format(filename))
+            print("File {} exists. Will overwrite with a new download!".format(filename))
 
     def hook(t):
         last_b = [0]
@@ -56,16 +53,16 @@ def download(url, dir, filename=None, expect_size=None):
         statinfo = os.stat(fpath)
         size = statinfo.st_size
     except IOError:
-        logger.error("Failed to download {}".format(url))
+        print("Failed to download {}".format(url))
         raise
     assert size > 0, "Downloaded an empty file from {}!".format(url)
 
     if expect_size is not None and size != expect_size:
-        logger.error("File downloaded from {} does not match the expected size!".format(url))
-        logger.error("You may have downloaded a broken file, or the upstream may have modified the file.")
+        print("File downloaded from {} does not match the expected size!".format(url))
+        print("You may have downloaded a broken file, or the upstream may have modified the file.")
 
     # TODO human-readable size
-    logger.info('Succesfully downloaded ' + filename + ". " + str(size) + ' bytes.')
+    print('Succesfully downloaded ' + filename + ". " + str(size) + ' bytes.')
     return fpath
 
 
