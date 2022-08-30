@@ -4,7 +4,7 @@ import torch.nn as nn
 from collections import OrderedDict
 
 
-def load_model_weight(model, checkpoint, logger):
+def load_model_weight(model, checkpoint):
     # ref: https://github.com/RangiLyu/nanodet/blob/v0.4.1/nanodet/util/check_point.py
     state_dict = checkpoint['state_dict']
     # strip prefix of state_dict
@@ -17,14 +17,14 @@ def load_model_weight(model, checkpoint, logger):
     for k in state_dict:
         if k in model_state_dict:
             if state_dict[k].shape != model_state_dict[k].shape:
-                logger.log('Skip loading parameter {}, required shape{}, loaded shape{}.'.format(
+                print('Skip loading parameter {}, required shape{}, loaded shape{}.'.format(
                     k, model_state_dict[k].shape, state_dict[k].shape))
                 state_dict[k] = model_state_dict[k]
         else:
-            logger.log('Drop parameter {}.'.format(k))
+            print('Drop parameter {}.'.format(k))
     for k in model_state_dict:
         if not (k in state_dict):
-            logger.log('No param {}.'.format(k))
+            print('No param {}.'.format(k))
             state_dict[k] = model_state_dict[k]
     model.load_state_dict(state_dict, strict=False)
 
@@ -38,6 +38,30 @@ def save_model(model, path, epoch, iter, optimizer=None):
         data['optimizer'] = optimizer.state_dict()
 
     torch.save(data, path)
+
+
+def copy_state_dict(state_dict, model, strip=None):
+    # ref: https://github.com/Cysu/open-reid/blob/3293ca79a07ebee7f995ce647aafa7df755207b8/reid/utils/serialization.py#L40
+    tgt_state = model.state_dict()
+    copied_names = set()
+    for name, param in state_dict.items():
+        if strip is not None and name.startswith(strip):
+            name = name[len(strip):]
+        if name not in tgt_state:
+            continue
+        if isinstance(param, Parameter):
+            param = param.data
+        if param.size() != tgt_state[name].size():
+            print('mismatch:', name, param.size(), tgt_state[name].size())
+            continue
+        tgt_state[name].copy_(param)
+        copied_names.add(name)
+
+    missing = set(tgt_state.keys()) - copied_names
+    if len(missing) > 0:
+        print("missing keys in state_dict:", missing)
+
+    return model
 
 
 def rename_state_dict_keys(source, key_transformation, target=None):
