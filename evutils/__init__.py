@@ -19,6 +19,6 @@ __all__ = [
     'colormap', 'random_color', 'tensor2imgs', 'polygon_iou', 'polygon_nms', 'mkdir_p', 'download', 
     'recursive_walk', 'load_model_weight', 'save_model', 'rename_state_dict_keys', 'fuse_conv_and_bn', 
     'fuse_model', 'replace_module', 'freeze_module', 'MyEncoder', 'findContours', 'imrotate',
-    'get_rotate_crop_image', 'skeletonize', , 'setup_seed', 'read_dir', 'get_image_file_list',
+    'get_rotate_crop_image', 'skeletonize', 'setup_seed', 'read_dir', 'get_image_file_list',
     'AverageMeter', 'DictAverageMeter', 'ListAverageMeter'
 ]
