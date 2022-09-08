@@ -9,7 +9,7 @@ from .file_io import mkdir_p, download, recursive_walk, read_dir, get_image_file
 from .torch_utils import (load_model_weight, save_model, rename_state_dict_keys, copy_state_dict, 
                           fuse_conv_and_bn, fuse_model, replace_module, freeze_module)
 from .cv2 import (findContours, imrotate, get_rotate_crop_image, skeletonize)
-from .average_meter import AverageMeter, DictAverageMeter, ListAverageMeter
+from .average_meter import AverageMeter, DictAverageMeter, ListAverageMeter, TimeAverager
 from .version import __version__
 
 __all__ = [
@@ -20,5 +20,5 @@ __all__ = [
     'recursive_walk', 'load_model_weight', 'save_model', 'rename_state_dict_keys', 'copy_state_dict', 
     'fuse_conv_and_bn', 'fuse_model', 'replace_module', 'freeze_module', 'MyEncoder', 'findContours', 
     'imrotate', 'get_rotate_crop_image', 'skeletonize', 'setup_seed', 'read_dir', 'get_image_file_list',
-    'AverageMeter', 'DictAverageMeter', 'ListAverageMeter'
+    'AverageMeter', 'DictAverageMeter', 'ListAverageMeter', 'TimeAverager'
 ]
