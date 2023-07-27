@@ -104,3 +104,35 @@ def setup_seed(seed=42):
     torch.backends.cudnn.deterministic = True  
     torch.backends.cudnn.benchmark = False  
     torch.backends.cudnn.enabled = False
+
+
+def get_image_from_url(url):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content)).convert("RGB")
+    return img
+
+
+def url_to_torch(url, size=(384, 384)):
+    img = get_image_from_url(url)
+    img = img.resize(size, Image.ANTIALIAS)
+    img = torch.from_numpy(np.asarray(img)).float()
+    img = img.permute(2, 0, 1)
+    img.div_(255)
+    return img
+
+
+def pil_to_batched_tensor(img):
+    return ToTensor()(img).unsqueeze(0)
+
+
+def save_raw_16bit(depth, fpath="raw.png"):
+    if isinstance(depth, torch.Tensor):
+        depth = depth.squeeze().cpu().numpy()
+    
+    assert isinstance(depth, np.ndarray), "Depth must be a torch tensor or numpy array"
+    assert depth.ndim == 2, "Depth must be 2D"
+    depth = depth * 256  # scale for 16-bit png
+    depth = depth.astype(np.uint16)
+    depth = Image.fromarray(depth)
+    depth.save(fpath)
+    print("Saved raw depth to", fpath)
