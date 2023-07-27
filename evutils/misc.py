@@ -6,6 +6,10 @@ import random
 import mmcv
 import torch
 import numpy as np
+import requests
+import torch
+from torchvision.transforms import ToTensor
+from PIL import Image
 import shapely
 from shapely.geometry import Polygon
 
