@@ -135,8 +135,27 @@ def save_raw_16bit(depth, fpath="raw.png"):
     
     assert isinstance(depth, np.ndarray), "Depth must be a torch tensor or numpy array"
     assert depth.ndim == 2, "Depth must be 2D"
-    depth = depth * 256  # scale for 16-bit png
+    # depth = depth * 256  # scale for 16-bit png
     depth = depth.astype(np.uint16)
     depth = Image.fromarray(depth)
     depth.save(fpath)
     print("Saved raw depth to", fpath)
+
+
+trans_t = lambda t : torch.Tensor([
+    [1,0,0,0],
+    [0,1,0,0],
+    [0,0,1,t],
+    [0,0,0,1]]).float()
+
+rot_phi = lambda phi : torch.Tensor([
+    [1,0,0,0],
+    [0,np.cos(phi),-np.sin(phi),0],
+    [0,np.sin(phi), np.cos(phi),0],
+    [0,0,0,1]]).float()
+
+rot_theta = lambda th : torch.Tensor([
+    [np.cos(th),0,-np.sin(th),0],
+    [0,1,0,0],
+    [np.sin(th),0, np.cos(th),0],
+    [0,0,0,1]]).float()
