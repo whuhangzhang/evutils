@@ -9,6 +9,7 @@ import numpy as np
 import requests
 import torch
 from torchvision.transforms import ToTensor
+from io import BytesIO
 from PIL import Image
 import shapely
 from shapely.geometry import Polygon
